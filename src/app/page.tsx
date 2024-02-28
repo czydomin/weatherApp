@@ -151,7 +151,7 @@ async function getCityList(cityName: string) {
   try {
     const response = await axios<City[]>({
       method: "GET",
-      url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=01b25e51e5277ae8bfe31818d8e8d059`,
+      url: `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=01b25e51e5277ae8bfe31818d8e8d059`,
     });
     return response.data;
   } catch (error) {
