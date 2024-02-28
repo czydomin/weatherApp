@@ -1,8 +1,6 @@
 import React from "react";
 import GoogleMapReact from "google-map-react";
 
-const AnyReactComponent = () => <div>123</div>;
-
 type SimpleMapProps = {
   lat: number;
   lng: number;
@@ -25,7 +23,8 @@ export default function SimpleMap({ lat, lng }: SimpleMapProps) {
         center={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
-        <AnyReactComponent lat={lat} lng={lng} />
+        {/* @ts-expect-error */}
+        <div lat={lat} lng={lng} />
       </GoogleMapReact>
     </div>
   );

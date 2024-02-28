@@ -18,7 +18,11 @@ export default function Home() {
         const response = await getCityList(city);
         setLocations(response);
       } catch (error) {
-        alert(error.message);
+        if (error instanceof Error) {
+          alert(error.message);
+        } else {
+          alert("unknown error");
+        }
       }
     },
     [setLocations]
@@ -47,7 +51,11 @@ export default function Home() {
 
       setLocations(response);
     } catch (error) {
-      alert(error.message);
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("unknown error");
+      }
     }
   }
 
@@ -56,7 +64,11 @@ export default function Home() {
       const res = await getWeatherList(lat, lon);
       setWeather(res);
     } catch (error) {
-      alert(error.message);
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("unknown error");
+      }
     }
   }
 
@@ -143,7 +155,11 @@ async function getCityList(cityName: string) {
     });
     return response.data;
   } catch (error) {
-    alert(error.message);
+    if (error instanceof Error) {
+      alert(error.message);
+    } else {
+      alert("unknown error");
+    }
     return null;
   }
 }
@@ -156,10 +172,15 @@ async function getWeatherList(lat: number, lon: number) {
     console.log(res.data);
     return res.data;
   } catch (error) {
-    alert(error.message);
-    return null;
+    if (error instanceof Error) {
+      alert(error.message);
+    } else {
+      alert("unknown error");
+    }
   }
+  return null;
 }
+
 type weatherResponse = {
   coord: {
     lon: number;
