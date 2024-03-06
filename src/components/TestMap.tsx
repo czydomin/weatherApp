@@ -17,15 +17,19 @@ export default function SimpleMap({ lat, lng }: SimpleMapProps) {
 
   return (
     // Important! Always set the container height explicitly
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: "100", width: "100%" }}>
       <GoogleMapReact
         bootstrapURLKeys={{ key: "" }}
         center={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
         {/* @ts-expect-error */}
-        <div lat={lat} lng={lng} />
+        <TestMap lat={lat} lng={lng} />
       </GoogleMapReact>
     </div>
   );
+}
+
+function TestMap() {
+  return <div>TestMap</div>;
 }

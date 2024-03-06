@@ -5,9 +5,16 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useDebounce } from "~/utils/useDebounce";
 import SimpleMap from "~/components/TestMap";
+import WeatherDetails from "~/components/WeatherDetails";
+import {
+  City,
+  getCityList,
+  getWeatherList,
+  weatherResponse,
+} from "~/utils/api";
 
 export default function Home() {
-  const [cityName, setCityName] = useState("");
+  const [cityName, setCityName] = useState("wroclaw");
   const [locations, setLocations] = useState<City[] | null>(null);
   const [weather, setWeather] = useState<weatherResponse | null>(null);
   const debouncedCityName = useDebounce(cityName, 500);
@@ -37,17 +44,6 @@ export default function Home() {
   async function onSearch() {
     try {
       const response = await getCityList(cityName);
-      console.log(response);
-      // TODO: add to state only unique cities
-      const cityNames = response?.map((city) => {
-        return city.name;
-      });
-      // console.log(cityNames);
-      // const test = new Set();
-      // test.add("Dominika");
-      // test.add("Dominika");
-      // test.add("Pola");
-      // console.log(test);
 
       setLocations(response);
     } catch (error) {
@@ -107,104 +103,12 @@ export default function Home() {
         {locations?.length === 0 && <p>Results not found</p>}
       </div>
       {weather ? (
-        <div className="flex flex-col gap-2 border border-1 p-2">
-          <div className="flex gap-2 ml-2">
-            <p>Clouds: </p> {weather.clouds.all}
-            <p>%</p>
-          </div>
-          <div className="flex gap-2 ml-2">
-            <p>Temperature:</p>
-            {weather.main.temp} <p>°C </p>
-          </div>
-          <div className="flex gap-2 ml-2">
-            <p>Feels like:</p>
-            {weather.main.feels_like}
-            <p>°C</p>
-          </div>
-          <div className="flex gap-2 ml-2">
-            <p>Wind:</p>
-            {weather.wind.speed}
-            <p>km/h</p>
-          </div>
-          <div className="flex gap-2 ml-2">
-            <p>Humidity:</p>
-            {weather.main.humidity}
-            <p>%</p>
-          </div>
-          {<SimpleMap lat={weather.coord.lat} lng={weather.coord.lon} />}
+        <div className="flex flex-1 gap-2  p-2 h-screen ">
+          <WeatherDetails weather={weather} />
+
+          <SimpleMap lat={weather.coord.lat} lng={weather.coord.lon} />
         </div>
       ) : null}
-
-      {/* <SimpleMap lat={} lng={} /> */}
     </main>
   );
 }
-
-type City = {
-  name: string;
-  lat: number;
-  lon: number;
-  country: string;
-};
-
-async function getCityList(cityName: string) {
-  try {
-    const response = await axios<City[]>({
-      method: "GET",
-      url: `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=01b25e51e5277ae8bfe31818d8e8d059`,
-    });
-    return response.data;
-  } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message);
-    } else {
-      alert("unknown error");
-    }
-    return null;
-  }
-}
-async function getWeatherList(lat: number, lon: number) {
-  try {
-    const res = await axios<weatherResponse>({
-      method: "GET",
-      url: `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=01b25e51e5277ae8bfe31818d8e8d059&units=metric`,
-    });
-    console.log(res.data);
-    return res.data;
-  } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message);
-    } else {
-      alert("unknown error");
-    }
-  }
-  return null;
-}
-
-type weatherResponse = {
-  coord: {
-    lon: number;
-    lat: number;
-  };
-  weather: Array<{
-    id: number;
-    main: string;
-    description: string;
-    icon: string;
-  }>;
-  main: {
-    temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    pressure: number;
-    humidity: number;
-  };
-  wind: {
-    speed: number;
-    deg: number;
-  };
-  clouds: {
-    all: number;
-  };
-};
